@@ -45,6 +45,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<Post> searchPost(String searchby) {
+        return postMapper.searchPost(searchby);
+    }
+
+    @Override
+    public int getSearchPostCount(String searchby) {
+        return postMapper.getSearchPostCount(searchby);
+    }
+
+    @Override
     public List<Post> queryAllPostByLatestreplytimeInAsc() {
         return postMapper.queryAllPostByLatestreplytimeInAsc();
     }

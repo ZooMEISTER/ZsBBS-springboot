@@ -21,6 +21,9 @@ public interface PostService {
 
     List<Post> queryAllPost();
 
+    List<Post> searchPost(String searchby);
+    int getSearchPostCount(String searchby);
+
 
     List<Post> queryAllPostByLatestreplytimeInAsc();
     List<Post> queryAllPostByLatestreplytimeInDesc();

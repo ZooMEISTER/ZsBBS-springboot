@@ -25,6 +25,12 @@ public interface PostMapper extends BaseMapper<Post> {
     @Select("SELECT * FROM sys_post")
     public List<Post> queryAllPost();
 
+    @Select("SELECT * FROM sys_post WHERE POSITION(#{searchby} IN title) ORDER BY publishtime DESC")
+    public List<Post> searchPost(String searchby);
+
+    @Select("SELECT count(*) FROM sys_post WHERE POSITION(#{searchby} IN title)")
+    public int getSearchPostCount(String searchby);
+
 
 
 

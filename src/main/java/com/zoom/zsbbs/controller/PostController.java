@@ -167,6 +167,14 @@ public class PostController {
         return new PostShow(postService.getAllPostCount(), postService.queryAllPost());
     }
 
+    //查询所有帖子信息 按时间升序
+    //http://localhost:8088/post/searchpost
+    @RequestMapping(value = "/searchpost", method = RequestMethod.POST)
+    public PostShow queryAllPost(@RequestParam("searchby") String searchby){
+        return new PostShow(postService.getSearchPostCount(searchby), postService.searchPost(searchby));
+    }
+
+
 //    //查询所有帖子信息 按时间升序
 //    //http://localhost:8088/post/queryallpostbylatestreplytimeasc
 //    @RequestMapping(value = "/queryallpostbylatestreplytimeasc", method = RequestMethod.POST)
