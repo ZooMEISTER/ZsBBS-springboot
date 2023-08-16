@@ -1,5 +1,6 @@
 package com.zoom.zsbbs.controller;
 
+import cn.hutool.crypto.SecureUtil;
 import com.zoom.zsbbs.entity.PostAuthor;
 import com.zoom.zsbbs.entity.User;
 import com.zoom.zsbbs.service.UserService;
@@ -25,6 +26,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
+    //用户密码md5加密的盐值
+    private static String MD5_SALT = "nslbhlsvhwnonchbshcbgiyvsivsmcsncndjcdvvmdlvmjdnvbbvhrnapbhd";
 
     @Autowired
     private UserService userService;
@@ -53,6 +57,10 @@ public class UserController {
             }
         }
 
+        //对用户密码进行加密
+        String md5Password = SecureUtil.md5(user.getPassword() + MD5_SALT);
+        user.setPassword(md5Password);
+
         int insertUserRes = userService.insertUser(user);
         System.out.println(user.getUserid());
         String token = JWTUtils.generateToken(user.getUserid());
@@ -66,9 +74,15 @@ public class UserController {
         System.out.println("username: " + user.getUsername());
         System.out.println("password: " + user.getPassword());
         List<User> userList = userService.queryAllUser();
+
+        //对传进来的用户密码进行加密
+        String md5Password = SecureUtil.md5(user.getPassword() + MD5_SALT);
+
+
         for(int i = 0;i < userList.size();++i){
             if(userList.get(i).getUsername().equals(user.getUsername())){
-                if(userList.get(i).getPassword().equals(user.getPassword())){
+                //if(userList.get(i).getPassword().equals(user.getPassword())){
+                if(userList.get(i).getPassword().equals(md5Password)){
                     //password is correct
                     String token = JWTUtils.generateToken(userList.get(i).getUserid());
                     return LoginResult.ok().data("userid", userList.get(i).getUserid())
@@ -176,7 +190,10 @@ public class UserController {
         System.out.println(userid);
         System.out.println(password);
 
-        if(userService.updatePasswordByUserid(userid, password) == 1){
+        //对用户密码进行加密
+        String md5Password = SecureUtil.md5(password + MD5_SALT);
+
+        if(userService.updatePasswordByUserid(userid, md5Password) == 1){
             return UserResultCode.UPDATE_SECCESS;
         }
         else{
